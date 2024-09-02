@@ -1,118 +1,97 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
+import React, { useRef, useState } from 'react';
+import { View, Image, TouchableWithoutFeedback, StyleSheet, Dimensions, FlatList, Text } from 'react-native';
+import SwipeCloseImage from 'react-native-swipe-close-image';
 
-import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+const data = [
+  { id: 1, media: "https://picsum.photos/1000/700", title: "John Doe" },
+  { id: 2, media: "https://picsum.photos/1000/700", title: "Smith Doe" },
+  { id: 3, media: "https://picsum.photos/1000/700", title: "Marnus Doe" },
+  { id: 4, media: "https://picsum.photos/1000/700", title: "Jacob Doe" },
+  { id: 5, media: "https://picsum.photos/1000/700", title: "William Doe" },
+];
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
+const App = () => {
+  const [imageSource, setImageSource] = useState<string | null>(null);
+  const swipeToCloseRef = useRef<any>(null);
+  const imageRefs = useRef<any[]>([]);  // Create an array of refs
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
-
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-  return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
-}
-
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
-
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
+  const onPressImage = (media: string, index: number) => {
+    if (swipeToCloseRef.current && imageRefs.current[index]) {
+      swipeToCloseRef.current.onOpen(imageRefs.current[index]);
+    }
+    setImageSource(media);
   };
 
-  return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
-      />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+  const renderItem = ({ item, index }: { item: typeof data[0]; index: number }) => (
+    <View style={styles.item}>
+      <Text style={styles.title}>{item.title}</Text>
+
+      <TouchableWithoutFeedback onPress={() => onPressImage(item.media, index)}>
+        <Image
+          ref={(ref) => (imageRefs.current[index] = ref)}  // Assign ref for each item
+          source={{ uri: item.media }}
+          resizeMode="cover"
+          style={styles.imageStyle}
+        />
+      </TouchableWithoutFeedback>
+
+      <View style={styles.row}>
+        <Text>100 Likes</Text>
+        <Text>10 Comments</Text>
+      </View>
+    </View>
   );
-}
+
+  return (
+    <View style={styles.container}>
+      <FlatList
+        data={data}
+        renderItem={renderItem}
+        keyExtractor={(item) => item.id.toString()}
+      />
+      {imageSource && (  // Ensure imageSource is not undefined
+        <SwipeCloseImage
+          ref={swipeToCloseRef}
+          imageSource={imageSource}
+        />
+      )}
+    </View>
+  );
+};
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
+  container: {
+    flex: 1,
+    alignItems: 'center',
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
+  imageStyle: {
+    width: Dimensions.get('window').width,
+    height: 250,
+    marginBottom: 10,
   },
-  sectionDescription: {
-    marginTop: 8,
+  item: {
+    width: '100%',
+    borderBottomWidth: 1 / 2,
+    paddingBottom: 10
+  },
+  title: {
+    color: "#000000",
     fontSize: 18,
-    fontWeight: '400',
+    fontWeight: '500',
+    marginVertical: 15,
+    marginHorizontal: 10
   },
-  highlight: {
-    fontWeight: '700',
-  },
+  row: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 10
+  }
 });
+
+import { LogBox } from 'react-native';
+
+LogBox.ignoreLogs(['Animated: `useNativeDriver` was not specified']);
 
 export default App;

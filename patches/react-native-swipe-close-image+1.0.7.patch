@@ -1,0 +1,19 @@
+patch-package
+--- a/node_modules/react-native-swipe-close-image/src/index.js
++++ b/node_modules/react-native-swipe-close-image/src/index.js
+@@ -222,13 +222,13 @@ export default class SwipeToCloseImage extends Component {
+               style={[fullScreenStyle, activeImageStyle]}
+             />
+           )}
+-          {!isDrag && (
++          {/* {!isDrag && (
+             <TouchableWithoutFeedback onPress={this.onClose}>
+               <Animated.View style={[styles.closeButton, animatedCloseOpacity]}>
+                 <Text style={styles.closeText}>Close</Text>
+               </Animated.View>
+             </TouchableWithoutFeedback>
+-          )}
++          )} */}
+         </View>
+       </Animated.View>
+     );
