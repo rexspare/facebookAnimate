@@ -1,0 +1,37 @@
+[
+    {
+        "id": 1,
+        "media": "https://picsum.photos/1000/700",
+        "title": "John Doe",
+        "likes": 100,
+        "comments": 10
+    },
+    {
+        "id": 2,
+        "media": "https://picsum.photos/1001/700",
+        "title": "Smith Doe",
+        "likes": 299,
+        "comments": 20
+    },
+    {
+        "id": 3,
+        "media": "https://picsum.photos/1002/700",
+        "title": "Marnus Doe",
+        "likes": 90,
+        "comments": 32
+    },
+    {
+        "id": 4,
+        "media": "https://picsum.photos/1003/700",
+        "title": "Jacob Doe",
+        "likes": 130,
+        "comments": 42
+    },
+    {
+        "id": 5,
+        "media": "https://picsum.photos/1004/700",
+        "title": "William Doe",
+        "likes": 120,
+        "comments": 45
+    }
+]
