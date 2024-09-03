@@ -1,4 +1,4 @@
-import React, { FC, useRef, useState } from 'react';
+import React, { FC, ReactNode, useRef, useState } from 'react';
 import { FlatList, View } from 'react-native';
 import SwipeCloseImage from 'react-native-swipe-close-image';
 import { FeedItem } from '../../components';
@@ -8,15 +8,15 @@ import styles from './styles.home';
 
 
 const HomeScreen: FC = () => {
-    const [imageSource, setImageSource] = useState<string | null>(null);
+    const [selectedNode, setselectedNode] = useState<string | ReactNode | null>(null);
     const swipeToCloseRef = useRef<any>(null);
-    const imageRefs = useRef<any[]>([]);  // Create an array of refs
+    const componentRef = useRef<any[]>([]);  // Create an array of refs
 
-    const onPressImage = (media: string, index: number) => {
-        if (swipeToCloseRef.current && imageRefs.current[index]) {
-            swipeToCloseRef.current.onOpen(imageRefs.current[index]);
+    const onPressImage = (media: string | ReactNode, index: number) => {
+        if (swipeToCloseRef.current && componentRef.current[index]) {
+            swipeToCloseRef.current.onOpen(componentRef.current[index]);
         }
-        setImageSource(media);
+        setselectedNode(media);
     };
 
     return (
@@ -27,16 +27,18 @@ const HomeScreen: FC = () => {
                     <FeedItem
                         item={item}
                         index={index}
-                        imageRef={(ref) => (imageRefs.current[index] = ref)}
+                        feedRef={(ref) => (componentRef.current[index] = ref)}
                         onPressImage={onPressImage}
                     />
                 )}
                 keyExtractor={(item) => item.id.toString()}
             />
-            {imageSource && (  // Ensure imageSource is not undefined
+            {selectedNode && (  // Ensure imageSource is not undefined
                 <SwipeCloseImage
                     ref={swipeToCloseRef}
-                    imageSource={imageSource}
+                    imageSource={selectedNode}
+                    isComponent={true}
+                    renderComponent={selectedNode}
                 />
             )}
         </View>

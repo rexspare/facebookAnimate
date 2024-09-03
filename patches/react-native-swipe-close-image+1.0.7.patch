@@ -1,11 +1,68 @@
 patch-package
 --- a/node_modules/react-native-swipe-close-image/src/index.js
 +++ b/node_modules/react-native-swipe-close-image/src/index.js
-@@ -222,13 +222,13 @@ export default class SwipeToCloseImage extends Component {
-               style={[fullScreenStyle, activeImageStyle]}
-             />
-           )}
+@@ -19,7 +19,9 @@ export default class SwipeToCloseImage extends Component {
+     imageSource: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
+     durationAnim: PropTypes.number,
+     distanceDismiss: PropTypes.number,
+-    disableDragHorizontal: PropTypes.bool
++    disableDragHorizontal: PropTypes.bool,
++    isComponent: PropTypes.bool,
++    renderComponent: PropTypes.node
+   };
+   static defaultProps = {
+     resizeMode: 'contain',
+@@ -173,7 +175,7 @@ export default class SwipeToCloseImage extends Component {
+   };
+ 
+   render() {
+-    const { backdropColor, imageSource } = this.props;
++    const { backdropColor, imageSource, isComponent, renderComponent } = this.props;
+     const { activeImage, isDrag } = this.state;
+     const activeImageStyle = {
+       width: this.dimensions.x,
+@@ -215,20 +217,43 @@ export default class SwipeToCloseImage extends Component {
+           ref={c => (this.viewFullScreenRef = c)}
+         >
+           <Animated.View style={[backdropStyle, animatedCloseOpacity]} />
+-          {activeImage && (
+-            <Animated.Image
+-              {...this.panResponder.panHandlers}
+-              source={newImageSource}
+-              style={[fullScreenStyle, activeImageStyle]}
+-            />
+-          )}
 -          {!isDrag && (
++          {
++            isComponent ?
++              <>
++                {
++                  activeImage && (
++                    <Animated.View
++                      {...this.panResponder.panHandlers}
++                      style={[fullScreenStyle, activeImageStyle, {
++                         justifyContent:'center',
++                      alignSelf:'center'
++                      }]}
++                    >
++                      {renderComponent}
++                    </Animated.View>
++                  )
++                }
++              </>
++              :
++              <>
++                {activeImage && (
++                  <Animated.Image
++                    {...this.panResponder.panHandlers}
++                    source={newImageSource}
++                    style={[fullScreenStyle, activeImageStyle, {
++                     
++                    }]}
++                  />
++                )}
++              </>
++          }
 +          {/* {!isDrag && (
              <TouchableWithoutFeedback onPress={this.onClose}>
                <Animated.View style={[styles.closeButton, animatedCloseOpacity]}>
